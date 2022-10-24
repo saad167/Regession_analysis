@@ -33,5 +33,69 @@ pairs(~X1+X2+X3+Y , data=DM , main = "Scatter Matrix")
 # Part 3 :
 
 ```{r}
+DM_Matrix<-as.matrix(DM.dt)
+rcorr(DM_Matrix, type=c("pearson","spearman"))
+```
 
+```{r}
+Scale_DM<-scale(DM.dt)
+colnames(Scale_DM)<- c("Y_cn","X1_cn","X2_cn","X3_cn","X4_cn","X5_cn","X6_cn","X7_cn","X8_cn")
+DT_scale<- cbind(DM.dt,Scale_DM)
+```
+
+#### Construction de T1 
+
+```{r}
+
+DT_scale<-DT_scale[,':='(T1=(1/sqrt(0.48^2 + 0.73^2 + 0.87^2 + 0.88^2 + 0.88^2 + 0.88^2 + 0.88^2 + 0.88^2))
+                         *((-0.48*X1_cn)+(0.73*X2_cn)+(0.87*X3_cn) +(0.88*X4_cn)+(0.88*X5_cn)+(0.88*X6_cn)+(0.88*X7_cn)                         +(0.88*X8_cn)))]
+```
+
+#### Construction de T2 
+
+```{r}
+# Regression y sur T1 et Xj j=1..8
+#pour chercher les variables contribuant de manière significative à la construction de T2
+
+lm11<-lm(formula = Y_cn ~ 0 + T1 + X1_cn, data=DT_scale)
+print(summary(lm11))
+
+lm12<-lm(formula = Y_cn ~ 0 + T1 + X2_cn, data=DT_scale)
+print(summary(lm12))
+
+lm13<-lm(formula = Y_cn ~ 0 + T1 + X3_cn, data=DT_scale)
+print(summary(lm13))
+
+lm14<-lm(formula = Y_cn ~ 0 + T1 + X4_cn, data=DT_scale)
+print(summary(lm14))
+
+lm15<-lm(formula = Y_cn ~ 0 + T1 + X5_cn, data=DT_scale)
+print(summary(lm15))
+
+lm16<-lm(formula = Y_cn ~ 0 + T1 + X6_cn, data=DT_scale)
+print(summary(lm16))
+
+lm17<-lm(formula = Y_cn ~ 0 + T1 + X7_cn, data=DT_scale)
+print(summary(lm17))
+
+lm18<-lm(formula = Y_cn ~ 0 + T1 + X8_cn, data=DT_scale)
+print(summary(lm18))
+```
+
+#### equation of PLS regression :
+
+```{r}
+add <- function(l) {
+   return (l[1] + l[2])
+}
+
+```
+
+```{r}
+l <- c(4,3)
+add(l)
+```
+
+```{r}
+add(DM.dt$Y)
 ```
