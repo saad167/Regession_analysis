@@ -5,5 +5,16 @@ csccs
 ## title
 
 ```{r}
+library(Hmisc)
+library(pls)
+```
+
+```{r}
+DM.dt <- fread(file.path("data.csv"))
+head(DM.dt)
+
+```
+
+```{r}
 print("test")
 ```
