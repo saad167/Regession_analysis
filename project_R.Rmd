@@ -1,20 +1,37 @@
-```{r}
-csccs
-```
+# Part 1 :
 
-## title
+## Importing Libraries {style="color : black"}
 
 ```{r}
 library(Hmisc)
 library(pls)
+library(data.table)
+```
+
+## Reading data set
+
+```{r}
+DM.dt <- fread(file.path("dataset.csv"))
+DM <- DM.dt[,.(X1,X2,X3,Y)]
+head(DM)
+
 ```
 
 ```{r}
-DM.dt <- fread(file.path("data.csv"))
-head(DM.dt)
-
+do.call(cbind, lapply(DM, summary))
 ```
 
 ```{r}
-print("test")
+DM_Matrix<-as.matrix(DM)
+rcorr(DM_Matrix, type=c("pearson","spearman"))
+```
+
+```{r}
+pairs(~X1+X2+X3+Y , data=DM , main = "Scatter Matrix")
+```
+
+# Part 3 :
+
+```{r}
+
 ```
