@@ -38,6 +38,15 @@ rcorr(DM_Matrix, type=c("pearson","spearman"))
 ```
 
 ```{r}
+# Regression multiple Y=f(X1..X8)
+lm<-lm(formula = Y ~ 0 + X1 + X2+ X3 + X4 + X5 +X6 + X7 + X8, data=DM.dt)
+#print 
+print(lm)
+#summary
+print(summary(lm))
+```
+
+```{r}
 Scale_DM<-scale(DM.dt)
 colnames(Scale_DM)<- c("Y_cn","X1_cn","X2_cn","X3_cn","X4_cn","X5_cn","X6_cn","X7_cn","X8_cn")
 DT_scale<- cbind(DM.dt,Scale_DM)
@@ -47,8 +56,9 @@ DT_scale<- cbind(DM.dt,Scale_DM)
 
 ```{r}
 
-DT_scale<-DT_scale[,':='(T1=(1/sqrt(0.48^2 + 0.73^2 + 0.87^2 + 0.88^2 + 0.88^2 + 0.88^2 + 0.88^2 + 0.88^2))
-                         *((-0.48*X1_cn)+(0.73*X2_cn)+(0.87*X3_cn) +(0.88*X4_cn)+(0.88*X5_cn)+(0.88*X6_cn)+(0.88*X7_cn)                         +(0.88*X8_cn)))]
+DT_scale<-DT_scale[,':='(T1=(1/sqrt(0.48^2 + 0.73^2 + 0.87^2 + 0.88^2 + 0.88^2 + 0.88^2 + 0.88^2 + 
+                                    0.88^2))*((-0.48*X1_cn)+(0.73*X2_cn)+(0.87*X3_cn) +(0.88*X4_cn)+
+                                                (0.88*X5_cn)+(0.88*X6_cn)+(0.88*X7_cn) +(0.88*X8_cn)))]
 ```
 
 #### Construction de T2
@@ -92,17 +102,37 @@ print(summary(lm_PLS))
 #### equation of PLS regression :
 
 ```{r}
-add <- function(l) {
-   return (l[1] + l[2])
-}
 
+# Y = 8.37267 + 0.25097*T1
+# Y = 8.37267 + 0.25097*0.43[(-0.48*X1_cn)+(0.73*X2_cn)+(0.87*X3_cn) +(0.88*X4_cn)+
+#                                                (0.88*X5_cn)+(0.88*X6_cn)+(0.88*X7_cn) +(0.88*X8_cn)]
+#Y=8.37267 - 0.05180021*X1 + 0.07877948*X2 + 0.09388788*X3 + 0.09496705*X4 + 0.09496705*X5 + 0.09496705*X6 + 0.09496705*X7 +0.09496705*X8
+
+DT_scale<-DT_scale[,':='(Y_fitted=(8.37267 + (-0.05180021*X1_cn)+(0.07877948* X2_cn)+(0.09388788*X3_cn)+
+                      (0.09496705* X4_cn)+(0.09496705* X5_cn)+(0.09496705* X6_cn)+(0.09496705* X7_cn)+
+                        (0.09496705* X8_cn)))]
 ```
 
 ```{r}
-l <- c(4,3)
-add(l)
+DT_scale$Y_fitted[seq(25,30)]
 ```
 
 ```{r}
-add(DM.dt$Y)
+xdata <- seq(1,30)
+plot(xdata , DT_scale$Y, type="o", col="blue", pch="o", lty=1, ylim=c(7,11),main="'Y' vs 'Y_fitted'",
+     ylab="Y", )
+# Add second curve to the same plot by calling points() and lines()
+# Use symbol '*' for points.
+points(xdata,  DT_scale$Y_fitted, col="red", pch="*")
+lines(xdata,  DT_scale$Y_fitted , col="red",lty=2)
+legend(24,11,legend=c("Y", "Y_fitted"), col=c("blue", "red"), lty=1:2, cex=0.8)
+```
+
+```{r}
+DT_scale$Y_fitted
+```
+
+```{r}
+DT_scale$Y
+
 ```
