@@ -1,10 +1,9 @@
-
 library(data.table)
 library(Hmisc)
 library(caTools)
 
 
-#setwd("C:/Users/Original Shop/Documents/Disque local (D)/INSEASCHOOL/3éme_anné/regression_grande_dimension/project_R")
+setwd("C:/Users/Original Shop/Documents/Disque local (D)/INSEASCHOOL/3éme_anné/regression_grande_dimension/project_R")
 
 
 bioblanc <- fread(file.path("dataset.csv"))
@@ -34,7 +33,7 @@ colnames(Scale_DM)<- c("Y_cn","X1_cn","X2_cn","X3_cn","X4_cn","X5_cn","X6_cn","X
 DT_scale<- cbind(train_set,Scale_DM)
 head(DT_scale)
 #################Construction de T1 ###########################
-DT_scale<-DT_scale[,':='(T1=(1/sqrt(0.43^2+0.69^2+0.87^2+0.89^2+0.89^2+0.89^2+0.81^2+0.89^2)) 
+DT_scale<-DT_scale[,':='(T1=(1/sqrt(0.43^2+0.69^2+0.87^2+0.89^2+0.89^2+0.89^2+0.88^2+0.89^2)) 
                          *((-0.43*X1_cn)+(0.69* X2_cn)+(0.87*X3_cn)+(0.89* X4_cn)+(0.89* X5_cn)+(0.89* X6_cn)+(0.88* X7_cn)+(0.89* X8_cn)))]
 #################Construction de T2 ###########################
 
@@ -60,9 +59,9 @@ print(summary(lm17))
 lm18<-lm(formula = Y_cn ~ 0 + T1 + X8_cn, data=DT_scale) #Non
 print(summary(lm18))
 
-# Seule la variable X7 est significative au risque de 5%
+# Seule la variable X2 est significative au risque de 5%
 
-# On calcule le résidus X17 de la régression de X7_nc sur T1 
+# On calcule le résidus X12 de la régression de X7_nc sur T1 
 
 lm_R12<-lm(formula = X2_cn ~ 0 + T1  , data=DT_scale)
 print(lm_R12)
@@ -76,7 +75,6 @@ X12<-resid(lm_R12)
 DT_scale<- cbind(DT_scale,X12)
 X12n<-X12/var(X12)
 DT_scale<- cbind(DT_scale,X12n)
-
 
 # Puis on effectue la régression multiple 
 # Y_cn sur T1 et X17n = x17/var(x17)
@@ -121,12 +119,13 @@ print(summary(lm28))
 
 # Regressions Y sur T1, T2
 
-
 lm_PLS<-lm(formula = Y ~   T1 + T2, data=DT_scale)
 print(summary(lm_PLS))
 attach(test_set)
-Y_pred=6.50146556837332-0.0794302243222059*X1+0.0532153618252829*X2+0.0252401648409459*X3+0.0651832234652371*X4+0.0241361681124469*X5+0.000207085420015180*X6-0.00134520130393274*X7+0.000351029766531645*X8
+Y_pred = 8.33708 + 0.25575 * ( -0.185717*X1 + 0.298011*X2 + 0.375753*X3 + 0.384391*X4 +
+                                0.384391*X5 + 0.384391*X6 + 0.380072*X7 + 0.384391*X8) + 0.18943*(-X2)
 
+Y_pred = 8.33708 - 0.04749712*X1 - 0.1132137*X2 + 0.09609883*X3 + 0.098308*X4 + 0.098308*X4 +0.098308*X4 
 #plot(test_set$Y,Y_pred)
 #abline(a=0,b=1)
 xdata <- c(1,2,3,4,5,6)
