@@ -13,12 +13,24 @@ library(data.table)
 ```{r}
 DM.dt <- fread(file.path("dataset.csv"))
 DM <- DM.dt[,.(X1,X2,X3,Y)]
-head(DM)
+head(DM.dt)
 
 ```
 
 ```{r}
 do.call(cbind, lapply(DM, summary))
+```
+
+```{r}
+boxplot(Y~X1,data=DM.dt,main="Distribution de Y par X1",xlab="X1",ylab="Y",col="yellow",border="brown")
+```
+
+```{r}
+boxplot(Y~X2,data=DM.dt,main="Distribution de Y par X2",xlab="X2",ylab="Y",col="yellow",border="brown")
+```
+
+```{r}
+boxplot(Y~X3,data=DM.dt,main="Distribution de Y par X3",xlab="X3",ylab="Y",col="yellow",border="brown")
 ```
 
 ```{r}
@@ -135,4 +147,8 @@ DT_scale$Y_fitted
 ```{r}
 DT_scale$Y
 
+```
+
+```{r}
+write.csv(DT_scale,"./test.csv", row.names = FALSE)
 ```
